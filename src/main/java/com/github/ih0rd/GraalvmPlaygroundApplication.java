@@ -1,39 +1,26 @@
 package com.github.ih0rd;
 
-import java.lang.management.ManagementFactory;
-import java.lang.management.RuntimeMXBean;
+import com.github.ih0rd.domain.HelloWorld;
+import com.github.ih0rd.helpers.GraalVmExecutor;
 
 public class GraalvmPlaygroundApplication {
 
     public static void main(String[] args) {
-        var runtimeMXBean = ManagementFactory.getRuntimeMXBean();
-        var runtimeInfo = getRuntimeInfo(runtimeMXBean);
-        System.out.println(runtimeInfo);
-    }
 
-    private static String getRuntimeInfo(RuntimeMXBean runtimeMXBean) {
-        String separator = "-".repeat(56);
-        return """
-                
-                GraalVM Runtime Info:
-                %s
-                | %-15s | %-35s |
-                | %-15s | %-35s |
-                | %-15s | %-35s |
-                | %-15s | %-35s |
-                | %-15s | %-35s |
-                | %-15s | %-35s |
-                %s""".formatted(
-                separator,
-                "Spec name", runtimeMXBean.getSpecName(),
-                "Spec version", runtimeMXBean.getSpecVersion(),
-                "VM Name", runtimeMXBean.getVmName(),
-                "VM Vendor", runtimeMXBean.getVmVendor(),
-                "VM Version", runtimeMXBean.getVmVersion(),
-                "Uptime", runtimeMXBean.getUptime(),
-                separator
-        );
-    }
+        var graalVMExecutor = new GraalVmExecutor();
 
+        HelloWorld helloWorld = graalVMExecutor.loadClassIntoContext(HelloWorld.class);
+        helloWorld.printHello();
+        System.out.println("helloWorld.simplyMultiply(2,5) = " + helloWorld.simplyMultiply(2, 5));
+
+        // Execute method via Truffle API & Espresso
+        Object printHelloResult = graalVMExecutor.executeMethod(HelloWorld.class, "printHello");
+        System.out.println("printHelloResult = " + printHelloResult);
+
+        Object simplyMultiplyResult = graalVMExecutor.executeMethod(HelloWorld.class, "simplyMultiply", 2, 3);
+        System.out.println("simplyMultiplyResult = " + simplyMultiplyResult);
+
+        graalVMExecutor.closeContext();
+    }
 
 }
