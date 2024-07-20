@@ -44,7 +44,7 @@ public class ContextManager {
                 .allowNativeAccess(false)
                 .allowCreateProcess(false)
                 .allowAllAccess(false)
-                .allowExperimentalOptions(true)
+                .allowExperimentalOptions(false)
                 .option("engine.WarnInterpreterOnly","false")
                 .build();
     }
