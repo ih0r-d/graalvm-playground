@@ -9,25 +9,28 @@
     <description>graalvm-playground</description>
     <properties>
         <java.version>17</java.version>
+        <graal.version>24.0.1</graal.version>
+        <plugin.encoding>UTF-8</plugin.encoding>
+        <manifest.mainClass>com.github.ih0rd.GraalvmPlaygroundApplication</manifest.mainClass>
     </properties>
     <dependencies>
         <!-- GraalVM SDK for Java -->
         <dependency>
             <groupId>org.graalvm.sdk</groupId>
             <artifactId>graal-sdk</artifactId>
-            <version>24.0.1</version>
+            <version>${graal.version}</version>
         </dependency>
         <!-- Truffle API -->
         <dependency>
             <groupId>org.graalvm.truffle</groupId>
             <artifactId>truffle-api</artifactId>
-            <version>24.0.1</version>
+            <version>${graal.version}</version>
         </dependency>
         <!-- Espresso -->
         <dependency>
             <groupId>org.graalvm.espresso</groupId>
             <artifactId>espresso-language</artifactId>
-            <version>24.0.1</version>
+            <version>${graal.version}</version>
         </dependency>
     </dependencies>
 
@@ -41,13 +44,13 @@
                     <source>${java.version}</source>
                     <target>${java.version}</target>
                     <release>${java.version}</release>
-                    <encoding>UTF-8</encoding>
+                    <encoding>${plugin.encoding}</encoding>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>3.1.0</version>
+                <version>3.4.2</version>
                 <configuration>
                     <archive>
                         <manifestEntries>
@@ -59,7 +62,7 @@
                             </Add-Exports>
                         </manifestEntries>
                         <manifest>
-                            <mainClass>com.github.ih0rd.GraalvmPlaygroundApplication</mainClass>
+                            <mainClass>${manifest.mainClass}</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -78,7 +81,7 @@
                             <transformers>
                                 <transformer
                                         implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>com.github.ih0rd.GraalvmPlaygroundApplication</mainClass>
+                                    <mainClass>${manifest.mainClass}</mainClass>
                                 </transformer>
                             </transformers>
                             <filters>
@@ -86,9 +89,17 @@
                                     <artifact>*:*</artifact>
                                     <excludes>
                                         <exclude>module-info.class</exclude>
+                                        <exclude>META-INF/MANIFEST.MF</exclude>
+                                        <exclude>
+                                            META-INF/services/com.oracle.truffle.api.instrumentation.provider.TruffleInstrumentProvider
+                                        </exclude>
+                                        <exclude>
+                                            META-INF/services/com.oracle.truffle.api.provider.TruffleLanguageProvider
+                                        </exclude>
                                     </excludes>
                                 </filter>
                             </filters>
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
                         </configuration>
                     </execution>
                 </executions>
@@ -98,7 +109,7 @@
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>3.3.1</version>
                 <configuration>
-                    <encoding>UTF-8</encoding>
+                    <encoding>${plugin.encoding}</encoding>
                 </configuration>
             </plugin>
         </plugins>
