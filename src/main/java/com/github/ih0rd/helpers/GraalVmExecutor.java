@@ -2,7 +2,6 @@ package com.github.ih0rd.helpers;
 
 import com.github.ih0rd.exceptions.GraalVMPlaygroundException;
 import com.oracle.truffle.api.*;
-import com.oracle.truffle.api.nodes.DirectCallNode;
 
 
 import org.graalvm.polyglot.Context;
@@ -10,7 +9,7 @@ import org.graalvm.polyglot.Context;
 /**
  * A class to manage the execution of operations within a secured GraalVM polyglot context.
  */
-public class GraalVmExecutor {
+public class GraalVmExecutor implements AutoCloseable{
 
     private final Context context;
 
@@ -50,9 +49,9 @@ public class GraalVmExecutor {
      * @return The result of the method execution.
      */
     public Object executeMethod(Class<?> clazz, String methodName, Object... args) {
-        TruffleRuntime runtime = Truffle.getRuntime();
+        var runtime = Truffle.getRuntime();
         var javaNode = new JavaNode(clazz, methodName, args);
-        DirectCallNode directCallNode = runtime.createDirectCallNode(javaNode.getCallTarget());
+        var directCallNode = runtime.createDirectCallNode(javaNode.getCallTarget());
         return directCallNode.call(args);
     }
 
@@ -64,5 +63,10 @@ public class GraalVmExecutor {
         if (context != null) {
             context.close();
         }
+    }
+
+    @Override
+    public void close() throws Exception {
+        closeContext();
     }
 }
