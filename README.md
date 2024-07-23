@@ -51,7 +51,7 @@ This project demonstrates how to implement sandboxing in GraalVM for Java applic
   ```
 * Run the application:
   ```shell
-  java -jar target/graalvm-playground-0.0.1-SNAPSHOT.jarD
+  java -jar target/graalvm-playground-0.0.1-SNAPSHOT.jar
   ```
 
 ## Usage
